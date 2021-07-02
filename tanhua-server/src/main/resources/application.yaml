@@ -20,8 +20,8 @@ tanhua:
     validateCodeTemplateCode: SMS_189616640
     signName: 黑马程序员
     parameterName: code
-    accessKeyId: LTAI4FyG7DDp4FhmgfidgeAt
-    accessKeySecret: LBXIjWlVmR2bpp9CVzYzqojUfJ6ezi
+    accessKeyId: **********
+    accessKeySecret: ***********
   redisValidateCodeKeyPrefix: VALIDATECODE_
   secret: 76bd425b6f29f7fcc2e0bfc286043df1
   uid: TOKEN_
