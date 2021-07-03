@@ -1,6 +1,7 @@
 package com.tanhua.dubbo.api;
 
 import com.tanhua.domain.mongo.RecommendUser;
+import com.tanhua.domain.vo.PageResult;
 
 /**
  * @Author ShuXinYuan  舒新元
@@ -9,4 +10,5 @@ import com.tanhua.domain.mongo.RecommendUser;
 public interface RecommendUserApi {
     RecommendUser findodayBestById(Long userId);
 
+    PageResult findodayBestAll(Integer page, Integer pagesize, Long userId);
 }
