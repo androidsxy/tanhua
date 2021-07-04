@@ -75,13 +75,13 @@ public class UserInfoService {
         String userString = redisTemplate.opsForValue().get(uid + token);
         if(StringUtils.isEmpty(userString)){
             //验证码码失效
-            throw new TanHuaException(ErrorResult.loginError());
+            throw new TanHuaException(ErrorResult.error());
         }
         //获取user里面的数据
         User user = JSON.parseObject(userString, User.class);
         if(user==null){
             //验证码码失效
-            throw new TanHuaException(ErrorResult.loginError());
+            throw new TanHuaException(ErrorResult.error());
         }
         //续签
         redisTemplate.expire(uid+token,1, TimeUnit.DAYS);

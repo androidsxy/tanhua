@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 
 /**
  * @Author ShuXinYuan  舒新元
@@ -120,7 +119,9 @@ public class PublishApiImpl implements PublishApi {
     public PageResult queryTuiJiaPublishList(int page, int pagesizs, Long userId) {
         //条件
         Query query = new Query();
-        query.addCriteria(Criteria.where("userId").is(userId)).with(Sort.by(Sort.Order.desc("created"))).limit(pagesizs).skip((page-1)*pagesizs);
+        query.addCriteria(Criteria.where("userId").is(userId))
+                .with(Sort.by(Sort.Order.desc("created")))
+                .limit(pagesizs).skip((page-1)*pagesizs);
 
         //查询总记录数
         long count = mongoTemplate.count(query, RecommendQuanzi.class);
@@ -144,5 +145,56 @@ public class PublishApiImpl implements PublishApi {
         countq = countq + count%pagesizs>0?1:0;
 
         return  new PageResult(count,Integer.toUnsignedLong(pagesizs),countq,Integer.toUnsignedLong(page),publishes);
+    }
+
+
+    /**
+     * 我的动态
+     * @param page
+     * @param pagesize
+     * @param userId
+     * @return
+     */
+    @Override
+    public PageResult queryWoDePublishList(int page, int pagesize, Long userId) {
+
+        //查询条件
+        Query query = new Query();
+        query.with(Sort.by(Sort.Order.desc("created"))).limit(pagesize).skip((page-1)*pagesize);
+        //总记录数
+        long count = mongoTemplate.count(query, Album.class, "quanzi_album_" + userId);
+        //相册列表
+        List<Album> list = mongoTemplate.find(query, Album.class, "quanzi_album_" + userId);
+        //创建一个空的集合对象
+        List<Publish> list1 = new ArrayList<>();
+        //循环
+        if(list!=null){
+            //查询发布表
+            for (Album album : list) {
+                if(album.getPublishId()!=null){
+                    Publish publish = mongoTemplate.findById(album.getPublishId(), Publish.class);
+                    if(publish!=null){
+                        list1.add(publish);
+                    }
+                }
+            }
+
+        }
+        long countq = count/pagesize;
+        countq = countq + count%pagesize>0?1:0;
+
+        return  new PageResult(count,Integer.toUnsignedLong(pagesize),countq,Integer.toUnsignedLong(page),list1);
+    }
+
+    /**
+     * 个人动态
+     * @param userId
+     * @param publishId
+     * @return
+     */
+    @Override
+    public Publish findById(Long userId, String publishId) {
+        //条件
+        return mongoTemplate.findById(publishId, Publish.class);
     }
 }
