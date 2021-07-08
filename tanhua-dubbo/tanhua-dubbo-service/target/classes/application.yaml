@@ -1,0 +1,37 @@
+#访问端口
+server:
+  port: 18081
+#数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tanha?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root
+  data:
+    mongodb:
+      uri: mongodb://192.168.136.160/tanhua
+#dubbo配置
+dubbo:
+  application:
+    name: tanhua-dubbo-service
+  registry:
+    address: zookeeper://192.168.136.160:2181
+  scan:
+    base-packages: com.tanhua.dubbo.api
+  provider:
+       timeout: 60000
+#mybatis plus配置
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: tb_
+      id-type: auto
+#log日志
+logging:
+  level:
+    root: info
+    com:
+      tanhua: debug
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg - %logger{15}%n\'
