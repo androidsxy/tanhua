@@ -1,11 +1,13 @@
 package com.tanhua.server.service;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.tanhua.domain.db.Question;
 import com.tanhua.domain.db.UserInfo;
 import com.tanhua.domain.mongo.RecommendUser;
 import com.tanhua.domain.vo.PageResult;
 import com.tanhua.domain.vo.RecommendUserQueryParam;
 import com.tanhua.domain.vo.TodayBestVo;
+import com.tanhua.dubbo.api.QuestionApi;
 import com.tanhua.dubbo.api.RecommendUserApi;
 import com.tanhua.dubbo.api.UserInfoApi;
 import com.tanhua.server.interceptor.UserHolder;
@@ -31,6 +33,11 @@ public class TodayBestService {
 
     @Reference
     private UserInfoApi userInfoApi;
+
+    @Reference
+    private QuestionApi questionApi;
+
+
     /**
      * 今日佳人
      * @return
@@ -111,5 +118,50 @@ public class TodayBestService {
             records.add(recommendUser);
         }
         return records;
+    }
+
+    /**
+     * 佳人信息
+     * @param userId
+     * @return
+     */
+    public TodayBestVo getUserInfo(Long userId) {
+        //获取当前用户id
+        Long toUserId = UserHolder.getUserId();
+        //创建对象
+        TodayBestVo todayBestVo = new TodayBestVo();
+        //获取当前用户信息
+        UserInfo userInfo = userInfoApi.findUserInfoById(userId);
+        //复制对象
+        BeanUtils.copyProperties(userInfo,todayBestVo);
+        //设置标签
+        if(userInfo.getTags()!=null){
+           todayBestVo.setTags(userInfo.getTags().split(","));
+        }
+        //获取缘分值
+        RecommendUser recommendUser = recommendUserApi.findById(toUserId,userId);
+        if(recommendUser==null){
+            recommendUser  = new RecommendUser();
+            recommendUser.setScore(88d);
+        }
+        todayBestVo.setFateValue(recommendUser.getScore().longValue());
+
+        return todayBestVo;
+    }
+
+    /**
+     * 查询陌生人问题
+     * @param userId
+     * @return
+     */
+    public Object findByIdQuestion(Long userId) {
+        //获取陌生人问题
+        Question question = questionApi.findQuestionById(userId);
+        if(question!=null){
+            if(question.getTxt()!=null){
+                return question.getTxt();
+            }
+        }
+        return "你喜欢我吗";
     }
 }

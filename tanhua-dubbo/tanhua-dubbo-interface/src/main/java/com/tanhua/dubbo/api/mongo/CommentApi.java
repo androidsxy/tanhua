@@ -13,4 +13,6 @@ public interface CommentApi {
     Long remove(Comment comment);
 
     PageResult findAllCommentList(int page, int pagesize, String movementId);
+
+    PageResult findAllById(int page, int pageSize, int i, Long userId);
 }

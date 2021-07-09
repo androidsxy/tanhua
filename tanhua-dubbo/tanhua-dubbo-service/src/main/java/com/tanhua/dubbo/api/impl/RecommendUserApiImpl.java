@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import javax.crypto.CipherSpi;
 import java.util.List;
 
 
@@ -58,5 +57,21 @@ public class RecommendUserApiImpl implements RecommendUserApi {
         cont =cont + count%pagesize>1?1:0;
         //返回分页对象
         return new PageResult(cont,pagesize.longValue(),cont,page.longValue(),recommendUsers);
+    }
+
+    /**
+     * 佳人信息缘分值
+     * @param toUserId
+     * @param userId
+     * @return
+     */
+    @Override
+    public RecommendUser findById(Long toUserId, Long userId) {
+        //条件
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(userId)
+        .and("toUserId").is(toUserId));
+
+        return mongoTemplate.findOne(query,RecommendUser.class);
     }
 }

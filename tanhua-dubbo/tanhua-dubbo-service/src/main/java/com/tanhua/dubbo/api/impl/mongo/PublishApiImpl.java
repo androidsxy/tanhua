@@ -27,6 +27,10 @@ public class PublishApiImpl implements PublishApi {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * 发布动态
+     * @param publishVo
+     */
     @Override
     public void add(PublishVo publishVo) {
         //当前时间
@@ -51,7 +55,7 @@ public class PublishApiImpl implements PublishApi {
         album.setPublishId(publish.getId());
         album.setCreated(time);
         //相册表保存数据
-        mongoTemplate.save(album);
+        mongoTemplate.save(album,"quanzi_album_" + publish.getUserId());
         //3 查询好友表
         //查询条件
         Query query = new Query();
@@ -120,7 +124,6 @@ public class PublishApiImpl implements PublishApi {
         //条件
         Query query = new Query();
         query.addCriteria(Criteria.where("userId").is(userId))
-                .with(Sort.by(Sort.Order.desc("created")))
                 .limit(pagesizs).skip((page-1)*pagesizs);
 
         //查询总记录数

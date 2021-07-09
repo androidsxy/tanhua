@@ -19,7 +19,7 @@ public class Comment implements Serializable {
     private Long userId;           //评论人
     private Integer likeCount = 0; //点赞数
     private Long created; //发表时间
-
+    private Long publishUserId; //发布人id
     //动态选择更新的字段
     public String getCol() {
         return this.commentType == 1 ? "likeCount" : commentType==2? "commentCount"

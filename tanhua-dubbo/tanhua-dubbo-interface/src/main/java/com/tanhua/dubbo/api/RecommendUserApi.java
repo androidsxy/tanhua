@@ -11,4 +11,6 @@ public interface RecommendUserApi {
     RecommendUser findodayBestById(Long userId);
 
     PageResult findodayBestAll(Integer page, Integer pagesize, Long userId);
+
+    RecommendUser findById(Long toUserId, Long userId);
 }

@@ -2,6 +2,7 @@ package com.tanhua.server.service;
 
 import com.alibaba.fastjson.JSON;
 import com.tanha.commons.exception.TanHuaException;
+import com.tanha.commons.templates.HuanXinTemplate;
 import com.tanha.commons.templates.SmsTemplate;
 import com.tanhua.domain.db.User;
 import com.tanhua.domain.vo.ErrorResult;
@@ -43,6 +44,10 @@ public class UserService {
 
     @Autowired
     private SmsTemplate  smsTemplate;
+
+
+    @Autowired
+    private HuanXinTemplate huanXinTemplate;
 
     //注入数据
     @Value("${tanhua.redisValidateCodeKeyPrefix}")
@@ -135,6 +140,8 @@ public class UserService {
             Long userID = userApi.save(user);
             user.setId(userID);
             map.put("isNew",true);
+            //注册
+            huanXinTemplate.register(userID);
         }
         //生成token
         String token = jwtUtils.createJWT(phone, user.getId());

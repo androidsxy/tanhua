@@ -17,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/movements")
-
-
 /**
  * 圈子功能controller层
  */
@@ -35,13 +33,13 @@ public class MomentController {
     /**
      * 发布动态
      * @param publishVo
-     * @param multipartFiles
+     * @param imageContent
      * @return
      */
     @PostMapping
-    public ResponseEntity movements(PublishVo publishVo, MultipartFile [] multipartFiles){
+    public ResponseEntity movements(PublishVo publishVo, MultipartFile [] imageContent){
 
-        mommentService.movements(publishVo,multipartFiles);
+        mommentService.movements(publishVo,imageContent);
 
         return ResponseEntity.ok(null);
     }
@@ -52,7 +50,8 @@ public class MomentController {
      * @return
      */
     @GetMapping
-    public ResponseEntity queryFriendPublishList(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int pagesizs){
+    public ResponseEntity queryFriendPublishList(@RequestParam(defaultValue = "1") int page,
+                                                 @RequestParam(defaultValue = "10") int pagesizs){
         page=page<1?1:page;
         PageResult<MomentVo> pageResult = mommentService.queryFriendPublishList(page,pagesizs);
         return ResponseEntity.ok(pageResult);
@@ -66,7 +65,8 @@ public class MomentController {
      * @return
      */
     @GetMapping("/recommend")
-    public ResponseEntity queryTuiJiaPublishList(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int pagesizs){
+    public ResponseEntity queryTuiJiaPublishList(@RequestParam(defaultValue = "1") int page,
+                                                 @RequestParam(defaultValue = "10") int pagesizs){
         page = page<1?1:page;
         PageResult<MomentVo> pageResult = mommentService.queryTuiJiaPublishList(page,pagesizs);
         return ResponseEntity.ok(pageResult);

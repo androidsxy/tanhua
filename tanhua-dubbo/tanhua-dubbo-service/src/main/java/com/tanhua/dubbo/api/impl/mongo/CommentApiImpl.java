@@ -37,6 +37,14 @@ public class CommentApiImpl implements CommentApi {
         comment.setId(ObjectId.get());
         //时间
         comment.setCreated(System.currentTimeMillis());
+        //对动态操作
+        if(comment.getPubType()==1){
+         //根据发布id查询用户id
+            Publish publish = mongoTemplate.findById(new ObjectId(comment.getPublishId().toHexString()), Publish.class);
+            if(publish!=null){
+                comment.setPublishUserId(publish.getUserId());
+            }
+        }
         //插入到数据库
         mongoTemplate.save(comment);
         //更新发布表或评论表
@@ -120,6 +128,13 @@ public class CommentApiImpl implements CommentApi {
         return count;
     }
 
+    /**
+     * 获取评论列表
+     * @param page
+     * @param pagesize
+     * @param movementId
+     * @return
+     */
     @Override
     public PageResult findAllCommentList(int page, int pagesize, String movementId) {
         //条件
@@ -136,5 +151,29 @@ public class CommentApiImpl implements CommentApi {
         countq = countq + count%pagesize>0?1:0;
 
         return  new PageResult(count,Integer.toUnsignedLong(pagesize),countq,Integer.toUnsignedLong(page),comments);
+    }
+
+    /**
+     * 点赞 取消 评论 列表
+     * @param page
+     * @param pageSize
+     * @param i
+     * @param userId
+     * @return
+     */
+    @Override
+    public PageResult findAllById(int page, int pageSize, int i, Long userId) {
+        //条件
+        Query query = new Query();
+        query.addCriteria(Criteria.where("publishUserId").is(userId)
+        .and("commentType").is(i)).limit(pageSize).skip((page-1)*pageSize);
+        //总记录数
+        long count = mongoTemplate.count(query, Comment.class);
+        //获取分页数据
+        List<Comment> commentList = mongoTemplate.find(query, Comment.class);
+
+        int pages = count / pageSize + count % pageSize > 0 ? 1 : 0;
+
+        return  new PageResult(count,Integer.toUnsignedLong(pageSize),(long)pages,Integer.toUnsignedLong(page),commentList);
     }
 }
