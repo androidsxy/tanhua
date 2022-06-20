@@ -1,5 +1,7 @@
 package com.tanhua.dubbo.api.mongo;
 
+import com.tanhua.domain.mongo.Publish;
+import com.tanhua.domain.vo.MomentVo;
 import com.tanhua.domain.vo.PageResult;
 import com.tanhua.domain.vo.PublishVo;
 
@@ -13,4 +15,8 @@ public interface PublishApi {
     PageResult queryFriendPublishList(int page, int pagesizs, Long userId);
 
     PageResult queryTuiJiaPublishList(int page, int pagesizs, Long userId);
+
+    PageResult queryWoDePublishList(int page, int pagesize, Long userId);
+
+    Publish findById(Long userId, String publishId);
 }
