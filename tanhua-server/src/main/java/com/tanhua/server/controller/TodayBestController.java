@@ -1,5 +1,7 @@
 package com.tanhua.server.controller;
 
+import com.tanhua.domain.vo.PageResult;
+import com.tanhua.domain.vo.RecommendUserQueryParam;
 import com.tanhua.domain.vo.TodayBestVo;
 import com.tanhua.server.service.TodayBestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +38,16 @@ public class TodayBestController {
         return ResponseEntity.ok(todayBestVo);
     }
 
+    /**
+     * 推荐朋友
+     * @param queryParam
+     * @return
+     */
+    @GetMapping("/recommendation")
+    public ResponseEntity recommendation(RecommendUserQueryParam queryParam){
+
+        PageResult<TodayBestVo> pageRequest = todayBestService.recommendation(queryParam);
+
+         return   ResponseEntity.ok(pageRequest);
+    }
 }
